@@ -1,0 +1,41 @@
+<header>
+    <a href="http://geekhub.ck.ua/" id="logo"></a>
+</header>
+
+<main>
+    <section id="block-2">
+        <h1 id="h11">{{ title }}</h1>
+        <div class="wrapper-content">
+            <!--<form action="/insert" method="post">-->
+                <input name="task" type="text" id="input" placeholder="Input you task, click 'Add' or press 'Enter'">
+                <!--<button type="submit" id="add-button" >Add</button>-->
+                <button id="add-button" onclick="add()">Add</button>
+            <!--</form>-->
+
+            <div id="list">
+                {{# each items }}
+                    <div class="task {{ this.completed}} " id = "{{this._id}}" data-position = {{ this.position}}>
+                        <span class="check-box" data_id = {{this._id}}></span>
+                        {{ this.task }}
+                        <span class="close" data_id = {{this._id}}>x</span>
+                    </div>
+                {{/each}}
+            </div>
+
+            <div class="wrapper-button">
+                <div class="count"><span id="count-tasks"></span> items left</div>
+                <div class="btn-blok-1">
+                    <button class="btn" onclick="allTask()">All</button>
+                    <button class="btn" onclick="active()">Active</button>
+                    <button class="btn" onclick="complet()">Completed</button>
+                    <button class="btn" onclick="clearCompleted()">Clear completed</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>Volodymyr Shcherbyna <a href="mailto:vladimshc@gmail.com">vladimshc@gmail.com</a></p>
+    <p>Learn js 2016-2017</p>
+</footer>
