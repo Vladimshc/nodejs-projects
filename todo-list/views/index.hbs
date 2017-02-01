@@ -3,20 +3,34 @@
 </header>
 
 <main>
+
+    <nav id="main-menu">
+        <ul>
+            <li><a href="https://github.com/Vladimshc/nodejs-projects/tree/master/todo-list">Code on github</a></li>
+        </ul>
+    </nav>
+
     <section id="block-2">
         <h1 id="h11">{{ title }}</h1>
         <div class="wrapper-content">
-            <!--<form action="/insert" method="post">-->
                 <input name="task" type="text" id="input" placeholder="Input you task, click 'Add' or press 'Enter'">
-                <!--<button type="submit" id="add-button" >Add</button>-->
                 <button id="add-button" onclick="add()">Add</button>
-            <!--</form>-->
 
             <div id="list">
                 {{# each items }}
-                    <div class="task {{ this.completed}} " id = "{{this._id}}" data-position = {{ this.position}}>
+                    <div class="
+                                task
+                                {{# if this.completed}}
+                                    done
+                                    {{else}}
+                                    false
+                                {{/if}}
+                                "
+                         id = "{{this._id}}"
+                         data-position = {{ this.position}}
+                    >
                         <span class="check-box" data_id = {{this._id}}></span>
-                        {{ this.task }}
+                        <p class="task-data" data_id = {{this._id}}>{{ this.task }}</p>
                         <span class="close" data_id = {{this._id}}>x</span>
                     </div>
                 {{/each}}

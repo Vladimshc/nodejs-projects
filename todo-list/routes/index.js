@@ -4,8 +4,8 @@ var mongo = require('mongodb').MongoClient;
 var objectId = require('mongodb').ObjectID;
 var assert = require('assert');
 
-// var url = 'mongodb://127.0.0.1:27017/test';
-var url = 'mongodb://user:123456@ds135689.mlab.com:35689/todolist';
+// var url = 'mongodb://127.0.0.1:27017/test'; //for local test
+var url = 'mongodb://user:123456@ds135689.mlab.com:35689/todolist'; //for production
 
 
 /* GET home page. */
@@ -78,7 +78,6 @@ router.post('/moveup', function (req, res, next) {
                 };
                 db.collection('userdata').updateOne({"_id": toBaseId}, {$set: item}, function (err, result) {
                     assert.equal(null, err);
-                    console.log('Item '+ i + ' updated');
                 });
             }
         db.close();

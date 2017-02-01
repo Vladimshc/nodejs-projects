@@ -14,6 +14,27 @@ function countTask() {
    $('#count-tasks').append(count);
 }
 
+function listPosition() {
+    var tasks = $('.task');
+    $('#list').empty();
+    var arr = [];
+        for (var i = 0; i < tasks.length; i++) {
+            var task = {};
+            task.position = Number(tasks[i].attributes[2].value);
+            task.value = tasks[i];
+            arr.push(task);
+        }
+    arr.sort(function (a, b) {
+        if (a.position < b.position) return -1;
+        if (a.position > b.position) return 1;
+        else return 0;
+    });
+    arr.forEach(function (item, i, arr) {
+        $('#list').append(item.value);
+
+    });
+}
+git
 $(document).ready(function () {
     $(document).on("click", ".close", delTask);
     $(document).keyup(function (event) {
@@ -22,11 +43,12 @@ $(document).ready(function () {
     $('#input').keyup(function (event) {
         if(event.keyCode == 13) add();
     });
-    $(document).on("dblclick", ".task", edit);
+    $(document).on("dblclick", ".task-data", edit);
     $(document).on("click", ".check-box", toggle);
     $("#list").sortable();
     $(document).on("mouseup", ".ui-sortable-helper", moveTask);
     countTask();
+    listPosition();
 });
 
 function add() {
@@ -56,14 +78,13 @@ function add() {
         var input = escapeHtml($('#input').val());
         var xhr = new XMLHttpRequest();
         var body = 'task=' + encodeURIComponent(input) +
-            '&completed=' + encodeURIComponent(false) +
             '&position=' + encodeURIComponent(position);
         xhr.open("POST", '/insert', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(body);
         $('#input').val("");
     }
-    setTimeout(location.reload(), 1500);
+    setTimeout(location.reload(), 2000);
 }
 
 function delTask(event) {
@@ -78,8 +99,10 @@ function delTask(event) {
 }
 
 function edit(event) {
-    var str = event.target.innerText.toString().slice(0, -2);
-    var id =  event.target.id;
+    console.log(event.toElement.parentNode.id);
+    // var str = event.target.innerText.toString().slice(0, -2);
+    var str = event.target.innerText;
+    var id =  event.toElement.parentNode.id;
     $("#" + id).html("")
         .html("<input type=\"text\" class=\"edit-box\" value=\"" + str + "\" />")
         .unbind('dblclick', edit);
@@ -100,12 +123,14 @@ function edit(event) {
 
 function toggle(event) {
     var id =  event.target.attributes.data_id.value;
-    var className = event.toElement.offsetParent.className;
     var task = event.toElement.parentElement.innerText.slice(0, -2);
-    if(className.substr(5, 4) === "done") {
+    var className = event.toElement.offsetParent.className;
+    var reg = /(done)/g;
+    var test = reg.test(className);
+
+    if(test) {
         var xhr = new XMLHttpRequest();
-        var body = 'completed=' + encodeURIComponent(false)+
-                    '&task=' + encodeURIComponent(task)+
+        var body =  'task=' + encodeURIComponent(task)+
                     '&id=' + encodeURIComponent(id);
         xhr.open("POST", '/update', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -113,7 +138,7 @@ function toggle(event) {
         setTimeout(location.reload(), 1500);
     } else {
         var xhr = new XMLHttpRequest();
-        var body = 'completed=' + encodeURIComponent("done")+
+        var body = 'completed=' + true +
             '&task=' + encodeURIComponent(task)+
             '&id=' + encodeURIComponent(id);
         xhr.open("POST", '/update', true);
@@ -139,38 +164,22 @@ function clearCompleted() {
     setTimeout(location.reload(), 1500);
 }
 
-function escapeHtml(text) {
-    var map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-}
-
-
 function moveTask() {
-    setTimeout(afterMove, 1500);
+    setTimeout(afterMove, 2000);
     function afterMove() {
         var windowData = [];
         var arr = $('.task');
         for (var i = 0; i < arr.length; i++){
             var data = {};
-            data.id = arr[i].id;
-            data.task = arr[i].innerText;
-            data.completed = false;
-            data.position = Number(arr[i].attributes[2].value);
 
+            data.id = arr[i].attributes[1].value;
+            data.task = arr[i].innerText;
+
+            var className = arr[i].className;
             var reg = /(done)/g;
-            var testClass = arr[i].className;
-            var test = reg.test(testClass);
-            if (test){
-                data.completed = true;
-            } else {
-                // do nothing
-            }
+            data.completed = reg.test(className);
+            data.position = i;
+
             windowData.push(data);
         }
 
@@ -193,3 +202,13 @@ function complet() {
     var tasks = $('.false').addClass('display-none')
 }
 
+function escapeHtml(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
