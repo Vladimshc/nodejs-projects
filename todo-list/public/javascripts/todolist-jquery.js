@@ -34,7 +34,7 @@ function listPosition() {
 
     });
 }
-git
+
 $(document).ready(function () {
     $(document).on("click", ".close", delTask);
     $(document).keyup(function (event) {
